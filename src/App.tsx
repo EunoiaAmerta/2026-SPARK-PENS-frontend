@@ -1,4 +1,5 @@
 import CustomerTable from "./components/CustomerTable";
+import CustomerForm from "./components/CustomerForm"; // 1. Import form-nya
 import type { Customer } from "./types/customer";
 
 const dummyData: Customer[] = [
@@ -20,8 +21,15 @@ const dummyData: Customer[] = [
 
 function App() {
   return (
-    <div>
+    <div style={{ maxWidth: "800px", margin: "0 auto", padding: "20px" }}>
       <h1>SparkPens - Customer Management</h1>
+
+      {/* 2. Tambahkan komponen Form di sini */}
+      <CustomerForm />
+
+      <hr style={{ margin: "40px 0" }} />
+
+      {/* 3. Tabel di bawahnya */}
       <CustomerTable customers={dummyData} />
     </div>
   );
