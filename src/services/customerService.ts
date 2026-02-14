@@ -18,4 +18,9 @@ export const customerService = {
   delete: async (id: string): Promise<void> => {
     await api.delete(`/customers/${id}`);
   },
+
+  update: async (id: string, data: Omit<Customer, "id">): Promise<Customer> => {
+    const response = await api.put(`/customers/${id}`, data);
+    return response.data;
+  },
 };

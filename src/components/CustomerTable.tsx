@@ -4,9 +4,10 @@ import type { Customer } from "../types/customer";
 interface Props {
   customers: Customer[];
   onDelete: (id: string) => void;
+  onEdit: (customer: Customer) => void;
 }
 
-const CustomerTable: React.FC<Props> = ({ customers, onDelete }) => {
+const CustomerTable: React.FC<Props> = ({ customers, onDelete, onEdit }) => {
   return (
     <div style={{ padding: "20px" }}>
       <table
@@ -30,11 +31,10 @@ const CustomerTable: React.FC<Props> = ({ customers, onDelete }) => {
               <td>{customer.phone}</td>
               <td>{customer.status}</td>
               <td>
-                <button onClick={() => alert(`Edit ${customer.name}`)}>
-                  Edit
-                </button>
+                {/* Sekarang onEdit sudah bisa dipanggil tanpa error */}
+                <button onClick={() => onEdit(customer)}>Edit</button>
                 <button
-                  onClick={() => onDelete(customer.id)} // Panggil fungsi onDelete di sini
+                  onClick={() => onDelete(customer.id)}
                   style={{ color: "red", marginLeft: "5px" }}
                 >
                   Delete
