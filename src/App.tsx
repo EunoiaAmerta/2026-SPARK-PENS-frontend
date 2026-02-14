@@ -31,6 +31,19 @@ function App() {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    if (window.confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+      try {
+        await customerService.delete(id);
+        alert("Data berhasil dihapus!");
+        fetchCustomers(); // Refresh data tabel otomatis setelah hapus
+      } catch (error) {
+        console.error("Gagal menghapus data:", error);
+        alert("Terjadi kesalahan saat menghapus data.");
+      }
+    }
+  };
+
   useEffect(() => {
     fetchCustomers();
   }, []);
@@ -55,7 +68,7 @@ function App() {
       {loading ? (
         <p>Memuat data dari server...</p>
       ) : (
-        <CustomerTable customers={customers} />
+        <CustomerTable customers={customers} onDelete={handleDelete} />
       )}
     </div>
   );
