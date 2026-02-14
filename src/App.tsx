@@ -58,35 +58,63 @@ function App() {
   return (
     <div
       style={{
-        maxWidth: "800px",
-        margin: "0 auto",
-        padding: "20px",
-        color: "white",
+        backgroundColor: "#1a1a2e",
+        minHeight: "100vh",
+        color: "#e2e2e2",
+        fontFamily: "'Inter', sans-serif",
+        padding: "40px 20px",
       }}
     >
-      <h1>SparkPens - Customer Management</h1>
+      <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
+        <header
+          style={{
+            borderBottom: "2px solid #16213e",
+            marginBottom: "30px",
+            paddingBottom: "10px",
+          }}
+        >
+          <h1 style={{ color: "#4ecca3", margin: 0 }}>✨ SparkPens</h1>
+          <p style={{ opacity: 0.7 }}>
+            Customer Relationship Management System
+          </p>
+        </header>
 
-      {/* Kirim fungsi fetchCustomers ke Form agar bisa dipanggil setelah submit */}
-      <CustomerForm
-        onSuccess={() => {
-          fetchCustomers();
-          setEditingCustomer(null); // Reset mode edit setelah sukses
-        }}
-        initialData={editingCustomer}
-      />
+        <section style={{ marginBottom: "40px" }}>
+          <CustomerForm
+            onSuccess={() => {
+              fetchCustomers();
+              setEditingCustomer(null);
+            }}
+            initialData={editingCustomer}
+          />
+        </section>
 
-      <hr style={{ margin: "40px 0" }} />
-
-      <h2>Customer List</h2>
-      {loading ? (
-        <p>Memuat data dari server...</p>
-      ) : (
-        <CustomerTable
-          customers={customers}
-          onDelete={handleDelete}
-          onEdit={handleEditClick} // Kirim fungsi edit ke tabel
-        />
-      )}
+        <section
+          style={{
+            backgroundColor: "#16213e",
+            borderRadius: "12px",
+            padding: "20px",
+            boxShadow: "0 4px 15px rgba(0,0,0,0.3)",
+          }}
+        >
+          <h2 style={{ marginBottom: "20px", fontSize: "1.5rem" }}>
+            Customer Directory
+          </h2>
+          {loading ? (
+            <div style={{ textAlign: "center", padding: "40px" }}>
+              <div className="spinner"></div>{" "}
+              {/* Nanti tambahkan CSS sedikit */}
+              <p>Retrieving data from secure vault...</p>
+            </div>
+          ) : (
+            <CustomerTable
+              customers={customers}
+              onDelete={handleDelete}
+              onEdit={handleEditClick}
+            />
+          )}
+        </section>
+      </div>
     </div>
   );
 }
