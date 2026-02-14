@@ -3,9 +3,10 @@ import type { Customer } from "../types/customer";
 
 interface Props {
   customers: Customer[];
+  onDelete: (id: string) => void;
 }
 
-const CustomerTable: React.FC<Props> = ({ customers }) => {
+const CustomerTable: React.FC<Props> = ({ customers, onDelete }) => {
   return (
     <div style={{ padding: "20px" }}>
       <table
@@ -33,7 +34,7 @@ const CustomerTable: React.FC<Props> = ({ customers }) => {
                   Edit
                 </button>
                 <button
-                  onClick={() => alert(`Delete ${customer.id}`)}
+                  onClick={() => onDelete(customer.id)} // Panggil fungsi onDelete di sini
                   style={{ color: "red", marginLeft: "5px" }}
                 >
                   Delete

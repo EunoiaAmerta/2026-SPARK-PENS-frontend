@@ -15,4 +15,7 @@ export const customerService = {
   },
 
   // Kamu bisa tambah update dan delete nanti di sini
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/customers/${id}`);
+  },
 };
