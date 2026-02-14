@@ -3,5 +3,6 @@ export interface Customer {
   name: string;
   email: string;
   phone: string;
+  address: string;
   status: string; // Misal: 'Active' atau 'Inactive'
 }
