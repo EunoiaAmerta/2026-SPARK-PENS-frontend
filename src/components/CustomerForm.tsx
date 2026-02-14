@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { customerService } from "../services/customerService";
 import type { Customer } from "../types/customer";
@@ -8,26 +8,45 @@ type CustomerInput = Omit<Customer, "id">;
 // Tambahkan interface Props ini
 interface Props {
   onSuccess: () => void;
+  initialData?: Customer | null;
 }
 
-const CustomerForm: React.FC<Props> = ({ onSuccess }) => {
+const CustomerForm: React.FC<Props> = ({ onSuccess, initialData }) => {
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<CustomerInput>();
 
+  useEffect(() => {
+    if (initialData) {
+      setValue("name", initialData.name);
+      setValue("email", initialData.email);
+      setValue("phone", initialData.phone);
+      setValue("address", initialData.address);
+      setValue("status", initialData.status);
+    } else {
+      reset(); // Reset form jika tidak dalam mode edit
+    }
+  }, [initialData, setValue, reset]);
+
   const onSubmit = async (data: CustomerInput) => {
     try {
-      // Kirim data ke Backend (Fitur 1: Menambah data)
-      await customerService.create(data);
-      alert("Data berhasil disimpan!");
-      reset(); // Kosongkan form setelah sukses
-      onSuccess(); // Panggil fetchCustomers di App.tsx untuk update tabel
+      if (initialData) {
+        // Mode Update (PUT)
+        await customerService.update(initialData.id, data);
+        alert("Data berhasil diperbarui!");
+      } else {
+        // Mode Create (POST)
+        await customerService.create(data);
+        alert("Data berhasil disimpan!");
+      }
+      onSuccess();
+      reset();
     } catch (error) {
-      console.error("Gagal simpan data:", error);
-      alert("Gagal simpan data ke server.");
+      console.error("Gagal simpan:", error);
     }
   };
 
@@ -79,7 +98,18 @@ const CustomerForm: React.FC<Props> = ({ onSuccess }) => {
           <option value="inactive">Inactive</option>
         </select>
       </div>
-      <button type="submit">Submit Customer</button>
+      <button type="submit">
+        {initialData ? "Save Changes" : "Submit Customer"}
+      </button>
+      {initialData && (
+        <button
+          type="button"
+          onClick={() => onSuccess()}
+          style={{ marginLeft: "10px" }}
+        >
+          Cancel
+        </button>
+      )}
     </form>
   );
 };

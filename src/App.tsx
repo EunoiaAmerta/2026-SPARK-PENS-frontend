@@ -7,6 +7,7 @@ import type { Customer } from "./types/customer";
 function App() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
 
   // Fungsi untuk ambil data dari Backend
   const fetchCustomers = async () => {
@@ -44,6 +45,12 @@ function App() {
     }
   };
 
+  const handleEditClick = (customer: Customer) => {
+    setEditingCustomer(customer);
+    // Scroll ke atas otomatis agar user sadar form sudah terisi
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   useEffect(() => {
     fetchCustomers();
   }, []);
@@ -60,7 +67,13 @@ function App() {
       <h1>SparkPens - Customer Management</h1>
 
       {/* Kirim fungsi fetchCustomers ke Form agar bisa dipanggil setelah submit */}
-      <CustomerForm onSuccess={fetchCustomers} />
+      <CustomerForm
+        onSuccess={() => {
+          fetchCustomers();
+          setEditingCustomer(null); // Reset mode edit setelah sukses
+        }}
+        initialData={editingCustomer}
+      />
 
       <hr style={{ margin: "40px 0" }} />
 
@@ -68,7 +81,11 @@ function App() {
       {loading ? (
         <p>Memuat data dari server...</p>
       ) : (
-        <CustomerTable customers={customers} onDelete={handleDelete} />
+        <CustomerTable
+          customers={customers}
+          onDelete={handleDelete}
+          onEdit={handleEditClick} // Kirim fungsi edit ke tabel
+        />
       )}
     </div>
   );
