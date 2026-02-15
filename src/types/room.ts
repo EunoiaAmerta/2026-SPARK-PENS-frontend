@@ -7,3 +7,5 @@ export interface Room {
   description: string;
   isAvailable: boolean;
 }
+
+export type RoomInput = Omit<Room, "id">;

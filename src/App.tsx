@@ -1,122 +1,153 @@
-import { useEffect, useState } from "react";
-import CustomerTable from "./components/CustomerTable";
-import CustomerForm from "./components/CustomerForm";
-import { customerService } from "./services/customerService";
-import type { Customer } from "./types/customer";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
+import { ThemeProvider, useTheme } from "./context/ThemeContext";
+import "./App.css";
+import AdminBookingPage from "./pages/AdminBookingPage";
+import AdminRoomPage from "./pages/AdminRoomPage";
+import BookingPage from "./pages/BookingPage";
+import RoomPage from "./pages/RoomPage";
+import CustomerPage from "./pages/CustomerPage";
+import {
+  CalendarCheck,
+  Settings,
+  LayoutDashboard,
+  Sun,
+  Moon,
+  LogOut,
+} from "lucide-react";
 
-function App() {
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
-
-  // Fungsi untuk ambil data dari Backend
-  const fetchCustomers = async () => {
-    try {
-      setLoading(true);
-      const result: any = await customerService.getAll();
-
-      // Debug: intip di console apakah benar result.data itu array
-      console.log("Cek struktur data:", result);
-
-      if (result && Array.isArray(result.data)) {
-        setCustomers(result.data);
-      } else if (Array.isArray(result)) {
-        setCustomers(result);
-      } else {
-        setCustomers([]);
-      }
-    } catch (error) {
-      console.error("Gagal mengambil data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus data ini?")) {
-      try {
-        await customerService.delete(id);
-        alert("Data berhasil dihapus!");
-        fetchCustomers(); // Refresh data tabel otomatis setelah hapus
-      } catch (error) {
-        console.error("Gagal menghapus data:", error);
-        alert("Terjadi kesalahan saat menghapus data.");
-      }
-    }
-  };
-
-  const handleEditClick = (customer: Customer) => {
-    setEditingCustomer(customer);
-    // Scroll ke atas otomatis agar user sadar form sudah terisi
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    fetchCustomers();
-  }, []);
-
+// Komponen NavItem dengan logika Active Link
+const NavItem = ({ to, icon: Icon, children }: any) => {
+  const location = useLocation();
+  const isActive = location.pathname.startsWith(to);
   return (
-    <div
-      style={{
-        backgroundColor: "#1a1a2e",
-        minHeight: "100vh",
-        color: "#e2e2e2",
-        fontFamily: "'Inter', sans-serif",
-        padding: "40px 20px",
-      }}
-    >
-      <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
-        <header
-          style={{
-            borderBottom: "2px solid #16213e",
-            marginBottom: "30px",
-            paddingBottom: "10px",
-          }}
-        >
-          <h1 style={{ color: "#4ecca3", margin: 0 }}>✨ SparkPens</h1>
-          <p style={{ opacity: 0.7 }}>
-            Customer Relationship Management System
-          </p>
-        </header>
+    <li>
+      <Link to={to} className={`nav-item ${isActive ? "active" : ""}`}>
+        <Icon size={18} /> {children}
+      </Link>
+    </li>
+  );
+};
 
-        <section style={{ marginBottom: "40px" }}>
-          <CustomerForm
-            onSuccess={() => {
-              fetchCustomers();
-              setEditingCustomer(null);
-            }}
-            initialData={editingCustomer}
-          />
-        </section>
-
-        <section
-          style={{
-            backgroundColor: "#16213e",
-            borderRadius: "12px",
-            padding: "20px",
-            boxShadow: "0 4px 15px rgba(0,0,0,0.3)",
-          }}
-        >
-          <h2 style={{ marginBottom: "20px", fontSize: "1.5rem" }}>
-            Customer Directory
-          </h2>
-          {loading ? (
-            <div style={{ textAlign: "center", padding: "40px" }}>
-              <div className="spinner"></div>{" "}
-              {/* Nanti tambahkan CSS sedikit */}
-              <p>Retrieving data from secure vault...</p>
-            </div>
-          ) : (
-            <CustomerTable
-              customers={customers}
-              onDelete={handleDelete}
-              onEdit={handleEditClick}
-            />
-          )}
-        </section>
+const Sidebar = () => {
+  const { theme, toggleTheme } = useTheme();
+  return (
+    <nav className="sidebar">
+      <div className="sidebar-header">
+        <LayoutDashboard size={24} color="var(--accent)" />
+        <span>SPARK ADMIN</span>
       </div>
-    </div>
+
+      <ul className="nav-list">
+        <NavItem to="/admin/rooms" icon={Settings}>
+          Kelola Ruangan
+        </NavItem>
+        <NavItem to="/admin/bookings" icon={CalendarCheck}>
+          Approval Booking
+        </NavItem>
+      </ul>
+
+      <div
+        className="theme-toggle-wrapper"
+        style={{ marginTop: "auto", padding: "1rem 0" }}
+      >
+        <Link
+          to="/bookings"
+          className="nav-item"
+          style={{
+            color: "#ef4444",
+            marginBottom: "0.5rem",
+            border: "1px solid #ef444422",
+          }}
+        >
+          <LogOut size={18} /> Keluar ke Public
+        </Link>
+        <button onClick={toggleTheme} className="theme-toggle">
+          {theme === "dark" ? <Moon size={18} /> : <Sun size={18} />}
+          <span>Mode {theme === "dark" ? "Terang" : "Gelap"}</span>
+        </button>
+      </div>
+    </nav>
+  );
+};
+
+function AppContent() {
+  return (
+    <Router>
+      <Routes>
+        {/* Rute Publik: 
+             Gunakan class 'center-wrapper' agar form booking 
+             berada di tengah layar (Sentris)
+          */}
+        <Route
+          path="/bookings"
+          element={
+            <div className="app-container public-page">
+              <main className="main-content public-main">
+                <div className="center-wrapper">
+                  <BookingPage />
+                </div>
+              </main>
+            </div>
+          }
+        />
+        <Route
+          path="/rooms"
+          element={
+            <div className="app-container public-page">
+              <main className="main-content public-main">
+                <RoomPage />
+              </main>
+            </div>
+          }
+        />
+        <Route
+          path="/customers"
+          element={
+            <div className="app-container public-page">
+              <main className="main-content public-main">
+                <CustomerPage />
+              </main>
+            </div>
+          }
+        />
+
+        {/* Rute Admin: Menggunakan Sidebar */}
+        <Route
+          path="/admin/*"
+          element={
+            <div className="app-container">
+              <Sidebar />
+              <main className="main-content">
+                <Routes>
+                  <Route path="rooms" element={<AdminRoomPage />} />
+                  <Route path="bookings" element={<AdminBookingPage />} />
+                </Routes>
+              </main>
+            </div>
+          }
+        />
+
+        {/* Redirect default ke Admin Booking (Approval) */}
+        <Route path="/admin" element={<Navigate to="/admin/bookings" />} />
+
+        {/* Redirect default ke Public Page */}
+        <Route path="/" element={<Navigate to="/bookings" />} />
+      </Routes>
+    </Router>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
+  );
+}
