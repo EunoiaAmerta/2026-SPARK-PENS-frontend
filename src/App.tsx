@@ -79,8 +79,7 @@ const NavItem = ({
 
 const Sidebar = () => {
   const { theme, toggleTheme } = useTheme();
-  const { user, isAdmin, logout } = useAuth();
-  const navigate = useLocation();
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
     logout();
