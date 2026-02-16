@@ -8,6 +8,7 @@ export const bookingService = {
     return response.data;
   },
 
+  // Get all bookings
   getAll: async () => {
     const response = await api.get<Booking[]>("/bookings");
     // Backend returns camelCase, ensure both formats available
@@ -43,6 +44,16 @@ export const bookingService = {
       }));
     }
     return data;
+  },
+
+  // Get bookings by room and optional date
+  getBookingsByRoom: async (roomId: string, date?: string) => {
+    let url = `/bookings/room/${roomId}`;
+    if (date) {
+      url += `?date=${encodeURIComponent(date)}`;
+    }
+    const response = await api.get<Booking[]>(url);
+    return response.data;
   },
 
   updateStatus: async (
