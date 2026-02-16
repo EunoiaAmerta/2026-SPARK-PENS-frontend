@@ -7,12 +7,14 @@ import {
   useLocation,
 } from "react-router-dom";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import "./App.css";
 import AdminBookingPage from "./pages/AdminBookingPage";
 import AdminRoomPage from "./pages/AdminRoomPage";
 import BookingPage from "./pages/BookingPage";
 import RoomPage from "./pages/RoomPage";
 import CustomerPage from "./pages/CustomerPage";
+import LoginPage from "./pages/LoginPage";
 import {
   CalendarCheck,
   Settings,
@@ -20,10 +22,50 @@ import {
   Sun,
   Moon,
   LogOut,
+  User,
 } from "lucide-react";
 
+// Protected Route Component
+const ProtectedRoute = ({
+  children,
+  requireAdmin = false,
+}: {
+  children: React.ReactNode;
+  requireAdmin?: boolean;
+}) => {
+  const { isAuthenticated, isAdmin, isLoading } = useAuth();
+  const location = useLocation();
+
+  if (isLoading) {
+    return (
+      <div className="loading-screen">
+        <div className="spinner"></div>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (requireAdmin && !isAdmin) {
+    return <Navigate to="/bookings" replace />;
+  }
+
+  return <>{children}</>;
+};
+
 // Komponen NavItem dengan logika Active Link
-const NavItem = ({ to, icon: Icon, children }: any) => {
+const NavItem = ({
+  to,
+  icon: Icon,
+  children,
+}: {
+  to: string;
+  icon: any;
+  children: React.ReactNode;
+}) => {
   const location = useLocation();
   const isActive = location.pathname.startsWith(to);
   return (
@@ -37,12 +79,27 @@ const NavItem = ({ to, icon: Icon, children }: any) => {
 
 const Sidebar = () => {
   const { theme, toggleTheme } = useTheme();
+  const { user, isAdmin, logout } = useAuth();
+  const navigate = useLocation();
+
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <nav className="sidebar">
       <div className="sidebar-header">
         <LayoutDashboard size={24} color="var(--accent)" />
         <span>SPARK ADMIN</span>
       </div>
+
+      {user && (
+        <div className="user-info">
+          <User size={18} />
+          <span>{user.name}</span>
+          <span className="user-role">{user.role}</span>
+        </div>
+      )}
 
       <ul className="nav-list">
         <NavItem to="/admin/rooms" icon={Settings}>
@@ -68,6 +125,9 @@ const Sidebar = () => {
         >
           <LogOut size={18} /> Keluar ke Public
         </Link>
+        <button onClick={handleLogout} className="logout-btn">
+          <LogOut size={18} /> Logout
+        </button>
         <button onClick={toggleTheme} className="theme-toggle">
           {theme === "dark" ? <Moon size={18} /> : <Sun size={18} />}
           <span>Mode {theme === "dark" ? "Terang" : "Gelap"}</span>
@@ -81,6 +141,9 @@ function AppContent() {
   return (
     <Router>
       <Routes>
+        {/* Login Route */}
+        <Route path="/login" element={<LoginPage />} />
+
         {/* Rute Publik: 
              Gunakan class 'center-wrapper' agar form booking 
              berada di tengah layar (Sentris)
@@ -118,23 +181,25 @@ function AppContent() {
           }
         />
 
-        {/* Rute Admin: Menggunakan Sidebar */}
+        {/* Rute Admin: Menggunakan Sidebar - Dilindungi */}
         <Route
           path="/admin/*"
           element={
-            <div className="app-container">
-              <Sidebar />
-              <main className="main-content">
-                <Routes>
-                  <Route path="rooms" element={<AdminRoomPage />} />
-                  <Route path="bookings" element={<AdminBookingPage />} />
-                </Routes>
-              </main>
-            </div>
+            <ProtectedRoute requireAdmin>
+              <div className="app-container">
+                <Sidebar />
+                <main className="main-content">
+                  <Routes>
+                    <Route path="rooms" element={<AdminRoomPage />} />
+                    <Route path="bookings" element={<AdminBookingPage />} />
+                  </Routes>
+                </main>
+              </div>
+            </ProtectedRoute>
           }
         />
 
-        {/* Redirect default ke Admin Booking (Approval) */}
+        {/* Redirect default ke Login atau Admin */}
         <Route path="/admin" element={<Navigate to="/admin/bookings" />} />
 
         {/* Redirect default ke Public Page */}
@@ -147,7 +212,9 @@ function AppContent() {
 export default function App() {
   return (
     <ThemeProvider>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </ThemeProvider>
   );
 }
