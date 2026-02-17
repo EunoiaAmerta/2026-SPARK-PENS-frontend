@@ -15,6 +15,8 @@ import BookingPage from "./pages/BookingPage";
 import RoomPage from "./pages/RoomPage";
 import CustomerPage from "./pages/CustomerPage";
 import LoginPage from "./pages/LoginPage";
+import SetPasswordPage from "./pages/SetPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import {
   CalendarCheck,
   Settings,
@@ -145,6 +147,15 @@ function AppContent() {
       <Routes>
         {/* Login Route */}
         <Route path="/login" element={<LoginPage />} />
+
+        {/* Set Password Route - for users who logged in via Google first time */}
+        <Route path="/set-password" element={<SetPasswordPage />} />
+
+        {/* Forgot Password Route */}
+        <Route path="/forgot-password" element={<ResetPasswordPage />} />
+
+        {/* Reset Password Route - with token */}
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         {/* Rute Publik: 
              Gunakan class 'center-wrapper' agar form booking 
