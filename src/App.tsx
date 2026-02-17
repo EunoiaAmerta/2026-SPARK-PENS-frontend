@@ -115,11 +115,14 @@ const Sidebar = () => {
       >
         <Link
           to="/bookings"
-          className="nav-item"
+          className="logout-btn"
           style={{
-            color: "#ef4444",
             marginBottom: "0.5rem",
-            border: "1px solid #ef444422",
+            textDecoration: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.5rem",
           }}
         >
           <LogOut size={18} /> Keluar ke Public

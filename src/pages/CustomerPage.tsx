@@ -3,6 +3,7 @@ import CustomerForm from "../components/CustomerForm"; // Asumsi komponen ini su
 import { customerService } from "../services/customerService";
 import type { Customer } from "../types/customer";
 import { useTheme } from "../context/ThemeContext";
+import PublicHeader from "../components/PublicHeader";
 import {
   Users,
   Trash2,
@@ -61,6 +62,7 @@ function CustomerPage() {
 
   return (
     <div className="main-content">
+      <PublicHeader />
       <div className="page-header">
         <div className="header-content">
           <div className="header-icon-container">

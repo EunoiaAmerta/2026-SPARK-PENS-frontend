@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { roomService } from "../services/roomService";
 import { bookingService } from "../services/bookingService";
+import PublicHeader from "../components/PublicHeader";
 import { Calendar, Users, Building2, CheckCircle, Clock } from "lucide-react";
 
 interface BookedSlot {
@@ -88,6 +89,7 @@ const RoomPage = () => {
 
   return (
     <div className="main-content">
+      <PublicHeader />
       <div className="page-header">
         <div className="header-content">
           <div className="header-icon-container">
