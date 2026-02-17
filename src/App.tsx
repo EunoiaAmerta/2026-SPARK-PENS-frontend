@@ -215,8 +215,8 @@ function AppContent() {
         {/* Redirect default ke Login atau Admin */}
         <Route path="/admin" element={<Navigate to="/admin/bookings" />} />
 
-        {/* Redirect default ke Public Page */}
-        <Route path="/" element={<Navigate to="/bookings" />} />
+        {/* Redirect default ke Login Page */}
+        <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
   );
