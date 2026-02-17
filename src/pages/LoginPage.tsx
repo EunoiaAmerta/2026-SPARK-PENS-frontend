@@ -50,6 +50,23 @@ export default function LoginPage() {
       const response = await authService.googleLogin(
         credentialResponse.credential,
       );
+
+      // Check if user needs to set password
+      if (response.needsPasswordSetup) {
+        // IMPORTANT: Save user to localStorage FIRST so they're logged in
+        // Then navigate to set password page
+        login(response.token, response.user);
+
+        // Navigate to set password page with user info
+        navigate("/set-password", {
+          state: {
+            email: response.user.email,
+            userId: response.user.id,
+          },
+        });
+        return;
+      }
+
       login(response.token, response.user);
 
       // Redirect based on role
@@ -93,14 +110,14 @@ export default function LoginPage() {
             <form onSubmit={handleAdminLogin}>
               <div className="form-group">
                 <label htmlFor="username">
-                  <User size={18} /> Username
+                  <User size={18} /> Email
                 </label>
                 <input
                   type="text"
                   id="username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Masukkan username"
+                  placeholder="Masukkan email"
                   required
                 />
               </div>
@@ -119,8 +136,31 @@ export default function LoginPage() {
                 />
               </div>
 
+              <div
+                style={{
+                  textAlign: "right",
+                  marginBottom: "1rem",
+                  marginTop: "-0.5rem",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => navigate("/forgot-password")}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "var(--accent)",
+                    cursor: "pointer",
+                    fontSize: "0.85rem",
+                    textDecoration: "underline",
+                  }}
+                >
+                  Lupa Password?
+                </button>
+              </div>
+
               <button type="submit" className="login-btn" disabled={isLoading}>
-                {isLoading ? "Loading..." : "Login sebagai Admin"}
+                {isLoading ? "Loading..." : "Login"}
               </button>
             </form>
 

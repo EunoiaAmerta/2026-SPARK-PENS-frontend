@@ -8,6 +8,7 @@ export interface User {
 export interface AuthResponse {
   token: string;
   user: User;
+  needsPasswordSetup: boolean;
 }
 
 export interface LoginCredentials {
@@ -18,4 +19,19 @@ export interface LoginCredentials {
 export interface GoogleCredentialResponse {
   credential: string;
   select_by: string;
+}
+
+export interface SetPasswordData {
+  userId: number;
+  newPassword: string;
+}
+
+export interface ForgotPasswordData {
+  email: string;
+  frontendUrl?: string;
+}
+
+export interface ResetPasswordData {
+  token: string;
+  newPassword: string;
 }

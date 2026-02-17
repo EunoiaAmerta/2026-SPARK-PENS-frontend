@@ -1,5 +1,11 @@
 import api from "./api";
-import type { AuthResponse, LoginCredentials } from "../types/auth";
+import type {
+  AuthResponse,
+  LoginCredentials,
+  SetPasswordData,
+  ForgotPasswordData,
+  ResetPasswordData,
+} from "../types/auth";
 
 export const authService = {
   login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
@@ -23,6 +29,56 @@ export const authService = {
       return response.data;
     } catch (error: any) {
       console.error("[authService] Google login error:", error);
+      throw error;
+    }
+  },
+
+  setPassword: async (data: SetPasswordData): Promise<{ message: string }> => {
+    try {
+      const response = await api.post<{ message: string }>(
+        "/auth/set-password",
+        data,
+      );
+      return response.data;
+    } catch (error: any) {
+      console.error("[authService] Set password error:", error);
+      throw error;
+    }
+  },
+
+  forgotPassword: async (
+    data: ForgotPasswordData,
+  ): Promise<{ message: string; resetLink?: string }> => {
+    try {
+      // Always include the current window location origin for dynamic URL generation
+      const payload = {
+        email: data.email,
+        frontendUrl:
+          typeof window !== "undefined" ? window.location.origin : undefined,
+      };
+
+      const response = await api.post<{ message: string; resetLink?: string }>(
+        "/auth/forgot-password",
+        payload,
+      );
+      return response.data;
+    } catch (error: any) {
+      console.error("[authService] Forgot password error:", error);
+      throw error;
+    }
+  },
+
+  resetPassword: async (
+    data: ResetPasswordData,
+  ): Promise<{ message: string }> => {
+    try {
+      const response = await api.post<{ message: string }>(
+        "/auth/reset-password",
+        data,
+      );
+      return response.data;
+    } catch (error: any) {
+      console.error("[authService] Reset password error:", error);
       throw error;
     }
   },
