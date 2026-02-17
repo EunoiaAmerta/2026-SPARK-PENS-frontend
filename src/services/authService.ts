@@ -1,35 +1,30 @@
-import axios from "axios";
+import api from "./api";
 import type { AuthResponse, LoginCredentials } from "../types/auth";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
-
-const api = axios.create({
-  baseURL: API_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Add token to requests if available
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
 
 export const authService = {
   login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
-    const response = await api.post<AuthResponse>("/auth/login", credentials);
-    return response.data;
+    console.log("[authService] Attempting login with:", credentials.username);
+    try {
+      const response = await api.post<AuthResponse>("/auth/login", credentials);
+      console.log("[authService] Login response:", response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error("[authService] Login error:", error);
+      console.error("[authService] Error response:", error.response?.data);
+      throw error;
+    }
   },
 
   googleLogin: async (credential: string): Promise<AuthResponse> => {
-    const response = await api.post<AuthResponse>("/auth/google", {
-      credential,
-    });
-    return response.data;
+    try {
+      const response = await api.post<AuthResponse>("/auth/google", {
+        credential,
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error("[authService] Google login error:", error);
+      throw error;
+    }
   },
 
   getCurrentUser: async () => {
@@ -51,5 +46,3 @@ export const authService = {
     return localStorage.getItem("token");
   },
 };
-
-export default api;

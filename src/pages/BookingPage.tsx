@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { roomService } from "../services/roomService";
 import { bookingService } from "../services/bookingService";
 import { useTheme } from "../context/ThemeContext";
+import PublicHeader from "../components/PublicHeader";
 import {
   Calendar,
   User,
@@ -229,6 +230,7 @@ function BookingPage() {
 
   return (
     <div className="main-content">
+      <PublicHeader />
       <div
         className="booking-hero"
         style={{ position: "sticky", top: 0, zIndex: 100 }}

@@ -10,6 +10,7 @@ import {
   XCircle,
   Trash2,
   Hourglass,
+  FileText,
 } from "lucide-react";
 
 // Helper function to parse date safely
@@ -142,6 +143,36 @@ const BookingCard = ({
         <User size={14} />
         <span>{booking.RequesterPhone || booking.requesterPhone || "-"}</span>
       </div>
+      {(booking.Purpose || booking.purpose) && (
+        <div
+          className="kanban-detail"
+          style={{
+            marginTop: "8px",
+            padding: "8px",
+            background: "var(--bg-secondary)",
+            borderRadius: "6px",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            gap: "4px",
+          }}
+        >
+          <span
+            style={{
+              fontWeight: 600,
+              fontSize: "12px",
+              color: "var(--text-secondary)",
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+            }}
+          >
+            <FileText size={12} /> Keperluan:
+          </span>
+          <span style={{ fontSize: "13px", lineHeight: "1.4" }}>
+            {booking.Purpose || booking.purpose}
+          </span>
+        </div>
+      )}
     </div>
 
     {showActions && (
