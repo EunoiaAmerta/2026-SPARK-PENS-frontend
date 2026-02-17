@@ -1,73 +1,177 @@
-# React + TypeScript + Vite
+# 🖊️ SparkPens Frontend System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Integrated Room Booking & Customer Management Web Application**
 
-Currently, two official plugins are available:
+## 📖 Description
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+SparkPens Frontend adalah aplikasi web frontend yang dirancang untuk berinteraksi dengan backend API SparkPens. Aplikasi ini mengelola tampilan untuk peminjaman ruangan dan manajemen informasi pelanggan (Customer) di lingkungan kampus PENS. Proyek ini bertujuan untuk memberikan pengalaman pengguna yang intuitif dan responsif.
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **User Authentication**: Login dengan email/password dan Google OAuth
+- **Role-based Access**: Akses berbeda untuk Admin dan User (Tamu)
+- **Admin Dashboard**:
+  - Kelola Ruangan (Create, Read, Update)
+  - Approval Booking (Terima/Tolak peminjaman)
+- **Public Pages**:
+  - Halaman Booking untuk tamu
+  - Lihat Daftar Ruangan
+  - Kelola Data Pelanggan
+- **Password Management**:
+  - Lupa Password dengan reset link via email
+  - Set Password untuk pengguna Google
+- **Dark/Light Theme**: Dukungan tema gelap dan terang
+- **Responsive Design**: Tampilan optimal di berbagai ukuran layar
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Framework**: React 19 + TypeScript
+- **Build Tool**: Vite
+- **Routing**: React Router DOM v7
+- **HTTP Client**: Axios
+- **UI Icons**: Lucide React
+- **Google OAuth**: @react-oauth/google
+- **Form Handling**: React Hook Form
+- **Deployment**: Vercel
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## ⚙️ Installation
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+1. Clone repositori ini ke mesin lokal Anda.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Buat file `.env` berdasarkan contoh:
+   ```bash
+   cp .env.example .env
+   ```
+4. Konfigurasi environment variables di `.env`:
+   ```env
+   VITE_API_URL=https://spark-pens-api.onrender.com/api
+   VITE_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+   ```
+5. Jalankan aplikasi dalam mode development:
+   ```bash
+   npm run dev
+   ```
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🚀 Usage
+
+### Development
+
+```bash
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Akses aplikasi di: http://localhost:5173
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Production Build
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build
 ```
+
+### Preview Production Build
+
+```bash
+npm run preview
+```
+
+## 🌐 Environment Variables
+
+| Variable                | Description            | Required               |
+| ----------------------- | ---------------------- | ---------------------- |
+| `VITE_API_URL`          | Backend API URL        | Yes                    |
+| `VITE_GOOGLE_CLIENT_ID` | Google OAuth Client ID | Yes (for Google Login) |
+
+## 📂 Project Structure
+
+```
+src/
+├── components/         # Reusable UI components
+│   ├── CustomerForm.tsx
+│   ├── CustomerTable.tsx
+│   ├── PublicHeader.tsx
+│   └── layouts/
+├── context/           # React Context providers
+│   ├── AuthContext.tsx
+│   └── ThemeContext.tsx
+├── hooks/             # Custom React hooks
+├── pages/             # Page components
+│   ├── AdminBookingPage.tsx
+│   ├── AdminRoomPage.tsx
+│   ├── BookingPage.tsx
+│   ├── CustomerPage.tsx
+│   ├── LoginPage.tsx
+│   ├── ResetPasswordPage.tsx
+│   ├── RoomPage.tsx
+│   └── SetPasswordPage.tsx
+├── services/          # API service modules
+│   ├── api.ts
+│   ├── authService.ts
+│   ├── bookingService.ts
+│   ├── customerService.ts
+│   └── roomService.ts
+├── types/             # TypeScript type definitions
+├── App.tsx            # Main application component
+├── main.tsx           # Application entry point
+└── index.css          # Global styles
+```
+
+## 🔗 API Endpoints
+
+Aplikasi ini terhubung dengan SparkPens Backend API. Pastikan backend sudah berjalan dan terkoneksi.
+
+### Authentication
+
+- `POST /api/auth/login` - Login with email/password
+- `POST /api/auth/google` - Login with Google
+- `POST /api/auth/forgot-password` - Request password reset
+- `POST /api/auth/reset-password` - Reset password
+- `POST /api/auth/set-password` - Set password for Google users
+
+### Rooms
+
+- `GET /api/rooms` - Get all rooms
+- `POST /api/rooms` - Create room (Admin)
+- `PUT /api/rooms/{id}` - Update room (Admin)
+- `DELETE /api/rooms/{id}` - Delete room (Admin)
+
+### Bookings
+
+- `GET /api/bookings` - Get all bookings
+- `POST /api/bookings` - Create booking
+- `PUT /api/bookings/{id}` - Update booking status (Admin)
+
+### Customers
+
+- `GET /api/customers` - Get all customers
+- `POST /api/customers` - Create customer
+- `PUT /api/customers/{id}` - Update customer
+- `DELETE /api/customers/{id}` - Delete customer (Soft delete)
+
+## 🌐 Deployment
+
+### Vercel (Recommended)
+
+1. Push kode ke GitHub
+2. Import project di Vercel
+3. Tambahkan environment variables:
+   - `VITE_API_URL`
+   - `VITE_GOOGLE_CLIENT_ID`
+4. Deploy secara otomatis
+
+### Manual Build
+
+```bash
+npm run build
+# Upload folder dist ke hosting
+```
+
+## 📝 License
+
+Distributed under the MIT License.
+
+## 👤 Author
+
+- Kratos Spartan - Frontend Developer - [GitHub Profile](https://github.com/EunoiaAmerta)
