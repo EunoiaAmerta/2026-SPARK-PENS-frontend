@@ -1,8 +1,9 @@
 import axios from "axios";
 
-// Selalu gunakan URL Render untuk kedua environment (lokal & Vercel)
-// Karena backend sudah di-deploy di Render
-const API_BASE_URL = "https://spark-pens-api.onrender.com/api";
+// Gunakan environment variable untuk API URL
+// Untuk Vite, environment variable harus dimulai dengan VITE_
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5151/api";
 
 console.log("[api] Using API URL:", API_BASE_URL);
 
